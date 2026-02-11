@@ -1,0 +1,50 @@
+<apex:page controller="PriceListController" renderAs="pdf" applyBodyTag="false">
+    <head>
+        <style type="text/css" media="print">
+            @page { size: A4 landscape; margin: 0.5in; }
+            body { font-family: "Arial Unicode MS", Arial, sans-serif; }
+            .header { margin-bottom: 20px; position: relative; height: 60px; display: flex; align-items: center; justify-content: center; }
+            .header-text h1 { font-size: 24px; color: #004b4c; margin: 0; }
+            .logo { height: 50px; position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
+            .summaryTable { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            .summaryTable th, .summaryTable td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 10px; }
+            .summaryTable th { background-color: #004b4c; color: white; font-weight: bold; }
+            .static-text { font-size: 10px; line-height: 1.5; color: #333; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <img src="{!$Resource.LogoAriaVerdi}" class="logo" />
+            <div class="header-text"><h1>Sumar ofertă {!quoteDetails.Name}</h1></div>
+        </div>
+        <table class="summaryTable">
+            <thead>
+                <tr>
+                    <th>Denumire ofertă</th><th>Preț Listă Ofertă fără TVA</th><th>Preț Lansare / Ofertă fără TVA</th>
+                    <th>Avantaj client</th><th>Suprafața achiziționată mp construiți</th>
+                    <th>Numărul de apartamente</th><th>Preț Listă / mp fără TVA</th><th>Preț lansare / mp fără TVA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>AV3</td>
+                    <td>{!totalPretLista}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{!totalSuprafataConstruita}</td>
+                    <td>{!totalApartamente}</td>
+                    <td>{!mediaPretPeMp}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="static-text">
+            <b>Termene de plată avans:</b><br/>
+            - 5% din valoarea totală la semnarea Contractului de Rezervare<br/>
+            - 20% din valoarea totală la semnarea Promisiunii de Vânzare<br/>
+            - 25% din valoarea totală în termen de 18 luni de la semnarea Promisiunii de Vânzare<br/>
+            - 50% din valoarea totală la semnarea Contractului de Vânzare<br/><br/>
+            Fiecărui apartament îi revine un loc de parcare subteran, respectiv un total de {!totalApartamente} locuri de parcare, incluse în prețul de lansare.
+        </div>
+    </body>
+</apex:page>

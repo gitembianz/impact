@@ -1,0 +1,17 @@
+<template>
+  <!-- <div class="slds-p-around_medium"> -->
+    <div class="slds-p-around_medium">
+        <div class={_variant}>
+          <div class="iconBox">
+            <lightning-icon icon-name={iconName} variant={_variant}></lightning-icon>
+          </div>
+          <div class="messageBox">
+            <p class="messageHeading">{message}</p>
+              <template for:each={errorMessages} for:item="message">
+                <p key={message}>{message}</p>
+              </template>
+          </div>
+        </div>
+    </div>
+    <div class="slds-clearfix"></div>
+</template>

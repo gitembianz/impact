@@ -1,0 +1,66 @@
+<template>
+  <template if:true={isHeading}>
+    <div class="slds-truncate" title={value} data-heading="true">
+      <a href={recordPageURL} target="_blank">{value}</a>
+    </div>
+  </template>
+
+  <template if:true={isNotHeading}>
+    <template if:true={isEditable}>
+      <template if:true={isCheckbox}>
+        <lightning-input type="checkbox" variant="label-hidden" checked={isChecked} onchange={onCheckboxChange}></lightning-input>
+      </template>
+      <template if:true={isInput}>
+        <template if:true={isPercentType}>
+          <lightning-input type="number" value={value} variant="label-hidden" min="0" max="100" formatter={formatter} step={step} class="datatable-input hide-error-message" onchange={onInputChange}></lightning-input>
+        </template>
+        <template if:false={isPercentType}>
+          <lightning-input type="number" value={value} variant="label-hidden" formatter={formatter} step={step} class="datatable-input hide-error-message" onchange={onInputChange}></lightning-input>
+        </template>
+      </template>
+
+    </template>
+    <template if:false={isEditable}>
+      <div class="slds-truncate">
+        <template if:true={isPercentType}>
+          <lightning-formatted-number value={value} format-style={type}></lightning-formatted-number>
+        </template>
+
+        <template if:true={isCurrencyType}>
+          <lightning-formatted-number value={value} format-style={type} currency-code={currenyCode}></lightning-formatted-number>
+        </template>
+
+        <template if:true={isDateType}>
+          <lightning-formatted-date-time value={value} time-zone={tz}></lightning-formatted-date-time>
+        </template>
+
+        <template if:true={isDateTimeType}>
+          <lightning-formatted-date-time value={value} time-zone={tz} hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+        </template>
+
+        <template if:true={isNumberType}>
+          <lightning-formatted-number value={value} format-style="decimal" minimum-integer-digits="4"></lightning-formatted-number>
+        </template>
+
+        <template if:true={isBoolean}>
+          <template if:true={value}>
+            <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+          </template>
+          <template if:false={value}>
+            <lightning-icon icon-name="utility:dash" size="x-small"></lightning-icon>
+          </template>
+        </template>
+        
+        <template if:true={isOtherType}>
+          <lightning-formatted-text value={value} data-other-type="true"></lightning-formatted-text>
+        </template>
+      </div>
+    </template>
+
+  </template>
+  <template if:true={isUnsupported}>
+
+    <div class="slds-truncate" data-unsupported="true">&nbsp;</div>
+
+  </template>
+</template>

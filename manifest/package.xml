@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- APEX CLASSES -->
+    <types>
+        <members>*</members>
+        <name>ApexClass</name>
+    </types>
+    
+    <!-- APEX PAGES -->
+    <types>
+        <members>*</members>
+        <name>ApexPage</name>
+    </types>
+    
+    <!-- LIGHTNING WEB COMPONENTS -->
+    <types>
+        <members>*</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    
+    <version>59.0</version>
+</Package>

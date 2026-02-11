@@ -1,0 +1,14 @@
+<apex:page controller="QuoteAnnexController" renderAs="pdf" applyBodyTag="false">
+    <head>
+        <style>
+            @page { margin: 0; }
+            body { margin: 0; }
+            img { width: 100%; page-break-after: always; }
+        </style>
+    </head>
+    <body>
+        <apex:repeat value="{!resourceNamesForPage}" var="resName">
+            <img src="{!URLFOR($Resource[resName])}" />
+        </apex:repeat>
+    </body>
+</apex:page>

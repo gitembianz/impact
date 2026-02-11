@@ -1,0 +1,33 @@
+<apex:page controller="ProformaGenerateAndDownloadController" action="{!generatePDF}">
+    <html>
+    <head>
+        <script type="text/javascript">
+            // Get the proforma ID from URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var proformaId = urlParams.get('id');
+            
+            // Wait for PDF generation to complete (2 seconds)
+            setTimeout(function() {
+                if (proformaId) {
+                    // Open PDF in NEW TAB
+                    window.open('/apex/ProformaInvoicePDFTemplate?id=' + proformaId, '_blank');
+                    
+                    // Close current tab or redirect back
+                    setTimeout(function() {
+                        window.close(); // Try to close
+                        // If close fails, redirect back to record
+                        setTimeout(function() {
+                            window.location.href = '/' + proformaId;
+                        }, 500);
+                    }, 500);
+                }
+            }, 2000);
+        </script>
+    </head>
+    <body style="font-family: Arial; text-align: center; padding: 50px;">
+        <h2>Generating PDF...</h2>
+        <p>Your PDF will open in a new tab.</p>
+        <apex:image url="/img/loading32.gif" />
+    </body>
+    </html>
+</apex:page>

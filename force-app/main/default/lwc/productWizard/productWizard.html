@@ -1,0 +1,33 @@
+<template>
+  <lightning-card title='{labels.productWizardTitle}' icon-name="custom:custom14">
+      <div class="slds-card__body slds-card__body_inner">
+          
+      <template if:true={errors.length}>
+        <c-pw-messages errors={errors} variant="error"></c-pw-messages>
+      </template>
+
+        <template if:false={fatal}>
+          <template if:false={hidePriceBookSelect}>
+            <c-pw-price-book-select quoteid={recordId} onselect={onPricebookSelect}></c-pw-price-book-select>
+          </template>
+          <template if:true={hidePriceBookSelect}>
+            <template if:false={hideProductSearch}>
+              <c-pw-product-search data-id="product-search" pricebookid={priceBookId} quoteid='{quoteId}' onback={backToPBSelect} onsavetrigger={onProductSearchSaveTrigger}></c-pw-product-search>
+            </template>
+          </template>
+        </template>
+
+        <template if:true={hidePriceBookSelect}>
+          <!-- Main body here-->
+          <template if:true={showPriceConfigurator}>
+            <c-pw-price-configuration fieldset={configuratorFieldset} records={selectedProductsData} 
+              onback={onPriceConfiguratorBack} 
+              ontriggersave={onPriceConfiguratorTriggerSave}
+            ></c-pw-price-configuration>
+          </template>
+        </template>
+
+
+      </div>
+  </lightning-card>
+</template>

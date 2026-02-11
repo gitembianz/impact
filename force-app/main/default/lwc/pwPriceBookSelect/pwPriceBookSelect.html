@@ -1,0 +1,35 @@
+<template>
+    <template if:true={errors.length}>
+      <c-pw-messages errors={errors} variant="error"></c-pw-messages>
+    </template>
+
+    <article class="slds-card">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__body">
+            <template if:true={records.length}>
+              <h2 class="slds-card__header-title">
+                <span>{labels.selectPricebook}</span>
+              </h2>
+            </template>
+          </div>
+        </header>
+      </div>
+      <div class="slds-card__body slds-card__body_inner">
+          <lightning-combobox
+            required
+            name="pws_choose"
+            value={value}
+            placeholder={labels.selectProductWizard}
+            options={options}
+            data-id="pws"
+            onchange={onComboboxSelect}
+            variant="label-hidden">
+          </lightning-combobox>
+      </div>
+      <footer class="slds-card__footer">
+        <c-pw-cancel-button label={labels.btnCancel} title={labels.btnCancel} class="slds-m-left_x-small"></c-pw-cancel-button>
+        <lightning-button label={labels.btnNext} name={labels.btnNext} onclick={onSelect} class="slds-m-left_x-small"></lightning-button>
+      </footer>
+    </article>
+</template>

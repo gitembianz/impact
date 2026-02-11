@@ -1,0 +1,7 @@
+:host .datatable-input {
+  max-width: 85px;
+}
+
+lightning-input > .slds-form-element__help {
+  display: none !important;
+}

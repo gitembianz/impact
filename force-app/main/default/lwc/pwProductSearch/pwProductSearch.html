@@ -1,0 +1,68 @@
+<template>
+  <template if:true={errors.length}>
+    <c-pw-messages errors={errors} variant="error"></c-pw-messages>
+  </template>
+
+  <article class="slds-card">
+    <div class="slds-m-around_medium">
+      <div class="slds-grid slds-wrap slds-gutters">
+        <div class="slds-col slds-size_11-of-12" onsearch={handleSearch}>
+          <lightning-input
+            data-id="search"
+            name="search"
+            type="search"
+            variant="label-hidden"
+            class="slds-m-bottom_small"
+            label='Search'
+            value={searchTerm}
+            onchange={handleChange}
+            onkeypress={enterPressed}
+          ></lightning-input>
+        </div>
+        <div class="slds-col slds-size_1-of-12">
+          <button 
+            class="slds-button slds-button_brand slds-m-bottom_small slds-button_stretch" 
+            onclick={handleSearch}
+          >{labels.btnSearch}</button>
+        </div>
+        <template if:true={toggleBtnVisible}>
+          <div class="slds-col slds-size_12-of-12">
+              <button class="slds-button slds-button_outline-brand slds-m-bottom_small slds-button_stretch" title={toggleBtnLabel} onclick={toggleButtonClick}>{toggleBtnLabel}</button>
+          </div>
+          <div class="slds-clearfix"></div>
+        </template>
+        <div class="slds-col slds-size_12-of-12">
+          <template if:true={showSearchResults}>
+            <lightning-datatable
+              data-id="search-results"
+              key-field="Id"
+              columns={columns}
+              selected-rows={selectedRows}
+              onrowselection={onSearchRowSelection}
+              data={searchResults}
+              is-loading={tableIsLoading}
+            ></lightning-datatable>
+          </template>
+          <template if:false={showSearchResults}>
+              <lightning-datatable
+              data-id="ql-items"
+              key-field="Id"
+              columns={columns}
+              selected-rows={selectedRows}
+              onrowselection={onRowSelection}
+              data={records}
+              is-loading={tableIsLoading}
+            ></lightning-datatable>
+          </template>
+        </div>
+      </div>
+    </div>
+    <footer class="slds-card__footer">
+      <c-pw-cancel-button label={labels.btnCancel} title={labels.btnCancel}></c-pw-cancel-button>
+      <template if:true='{backButtonVisible}'>
+        <lightning-button class="slds-m-left_x-small" label={labels.btnBack} name={labels.btnBack} onclick={onBack}></lightning-button>
+      </template>
+      <lightning-button class="slds-m-left_x-small" label={labels.btnNext} name={labels.btnNext} onclick={saveTrigger}></lightning-button>
+    </footer>
+  </article>
+</template>

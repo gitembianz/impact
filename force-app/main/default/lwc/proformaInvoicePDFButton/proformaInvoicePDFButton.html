@@ -1,0 +1,20 @@
+<template>
+    <lightning-button
+        label="Create PDF"
+        title="Generate and Download PDF"
+        icon-name="utility:download"
+        variant="brand"
+        onclick={handleGeneratePDF}
+        disabled={isGenerating}
+    ></lightning-button>
+    
+    <!-- Loading Spinner -->
+    <template if:true={isGenerating}>
+        <div class="spinner-container">
+            <lightning-spinner 
+                alternative-text="Generating PDF..." 
+                size="medium">
+            </lightning-spinner>
+        </div>
+    </template>
+</template>

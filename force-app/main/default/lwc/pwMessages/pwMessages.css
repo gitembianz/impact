@@ -1,0 +1,82 @@
+.error{
+  border-radius: 5px;
+  border-color: #f5c6cb;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 5px;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.default{
+  border-radius: 5px;
+  border-color: #b8daff;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #cce5ff;
+  color: #004085;
+  padding: 5px;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.success{
+  border-radius: 5px;
+  border-color: #c3e6cb;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #d4edda;
+  color: #155724;
+  padding: 5px;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.warning{
+  border-radius: 5px;
+  border-color: #ffeeba;
+  border-style: solid;
+  border-width: 1px;
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 5px;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.iconBox{
+  position: relative; 
+  float: left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  margin-right: 10px;
+}
+
+.messageBox{
+  position: relative; 
+  float: left;
+}
+
+.messageHeading{
+  font-size: 1rem;
+  font-weight: bold;
+}

@@ -1,0 +1,53 @@
+<apex:page standardController="Proforma_Invoice__c">
+    <script type="application/javascript">
+
+        var templateid;
+        var naming = 'Proforma Invoice '
+
+        switch ("{!Proforma_Invoice__c.Phase__r.Provider_Name__r.Name}") {
+case "Bergamot Developments Phase II SRL":
+
+            if ({!Proforma_Invoice__c.Account__r.IsPersonAccount} == true) {
+                templateid= 'a0mNz000008ZmQBIA0';
+        }else {
+                templateid= 'a0mNz000008ZmQAIA0';
+        }
+        break;
+
+case "Bergamot Developments SRL":
+    if ({!Proforma_Invoice__c.Account__r.IsPersonAccount} == true) {
+        templateid= 'a0mNz000008ZmQBIA0';
+}else {
+        templateid= 'a0mNz000008ZmQAIA0';
+}
+break;
+
+case "Greenfield Baneasa SRL":
+    if ({!Proforma_Invoice__c.Account__r.IsPersonAccount} == true) {
+        templateid= 'a0mNz000008ZmQBIA0';
+}else {
+        templateid= 'a0mNz000008ZmQAIA0';
+}
+break;
+
+case "Greenfield Copou Residence SRL":
+    if ({!Proforma_Invoice__c.Account__r.IsPersonAccount} == true) {
+        templateid= 'a0mNz000008ZmQBIA0';
+}else {
+        templateid= 'a0mNz000008ZmQAIA0';
+}
+
+case "Impact Developer & Contractor S.A.":
+    if ({!Proforma_Invoice__c.Account__r.IsPersonAccount} == true) {
+        templateid= 'a0mNz000008ZmQBIA0';
+}else {
+        templateid= 'a0mNz000008ZmQAIA0';
+}
+break;
+}
+
+window.location.href = '/apex/hic_docmerge__Composer?id={!Proforma_Invoice__c.Id}&documentTemplateId='+templateid+'&DS7=3&DefaultPDF=1&bgm=1&OFN='+naming+'{!Proforma_Invoice__c.Name}&RedirectToUrl=/lightning/r/Proforma_Invoice__c/{!Proforma_Invoice__c.Id}/view';
+
+    </script>
+
+</apex:page>

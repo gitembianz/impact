@@ -1,0 +1,8 @@
+:host .slds-tree__item {
+  line-height: 2rem !important;
+}
+
+:host th > .slds-icon_container {
+  line-height: 2rem !important;
+  padding-right: 4px;
+}

@@ -1,0 +1,118 @@
+<template>
+  <article class="slds-card">
+    <div class="slds-card__header slds-grid">
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+          <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title='{labels.productConfigurator}'>
+            <span>{labels.productConfigurator}</span>
+          </a>
+        </h2>
+      </div>
+    </div>
+
+    <div class="slds-card__body">
+      <template if:true={errors.length}>
+          <c-pw-messages errors={errors} variant="error"></c-pw-messages>
+      </template>
+      
+      <table aria-multiselectable="true"
+        class="slds-table slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols slds-tree slds-table_tree"
+        role="treegrid">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <template for:each={columns} for:item="item">
+              <template if:true={item.isCheckbox}>
+                <th key={item.fieldName} class="slds-text-align_right" scope="col" style="width: 3.25rem;">
+                  <div class="slds-th__action slds-th__action_form">
+                    &nbsp;
+                  </div>
+                </th>
+              </template>
+              <template if:false={item.isCheckbox}>
+                <th key={item.fieldName} aria-label={item.label} aria-sort="none"
+                  class="slds-has-button-menu slds-is-resizable slds-is-sortable" scope="col">
+                  <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                    <span class="slds-truncate" title={item.label}>{item.label}</span>
+                  </div>
+                </th>
+              </template>
+            </template>
+          </tr>
+        </thead>
+        <tbody>
+          <template for:each={records} for:item="record">
+            <tr key={record.Id} aria-level="1" aria-posinset="1" aria-selected="false" aria-expanded="true"
+              aria-setsize="4" class="slds-hint-parent" tabindex="0">
+              <template for:each={columns} for:item="column">
+                <template if:true={column.isName}>
+                  <th key={column.fieldName} class="slds-tree__item" scope="row">
+                    <template if:true={record._children}>
+                      <lightning-icon icon-name="utility:chevrondown" size="x-small"></lightning-icon>
+                    </template>
+                    <c-pw-price-configuration-item config={column} record-id={record.Product2.Id} record={record} level="1">
+                    </c-pw-price-configuration-item>
+                  </th>
+                </template>
+                <template if:false={column.isName}>
+                  <td key={column.fieldName} role="gridcell">
+                    <c-pw-price-configuration-item config={column} record-id={record.Product2.Id} record={record} 
+                      level="1" oncellchange={onCellChange}>
+                    </c-pw-price-configuration-item>
+                  </td>
+                </template>
+              </template>
+            </tr>
+
+            <template for:each={record._children} for:item="childRecord">
+              <tr key={childRecord.Id} aria-level="2" aria-posinset="1" aria-selected="false" aria-setsize="4"
+                class="slds-hint-parent" tabindex="0">
+                <template for:each={columns} for:item="column">
+                  <template if:true={column.isName}>
+                    <th key={column.fieldName} class="slds-tree__item" scope="row">
+                      <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                      <c-pw-price-configuration-item config={column} record-id={childRecord.Product2.Id} record={childRecord}
+                        level="2"></c-pw-price-configuration-item>
+                    </th>
+                  </template>
+                  <template if:false={column.isName}>
+                    <template if:true={column.isCheckbox}>
+                      <td key={column.fieldName} role="gridcell" style="width: 3.25rem;">
+                        <c-pw-price-configuration-item config={column} record-id={childRecord.Product2.Id} record={childRecord}
+                          level="2" oncellchange={onCellChange}
+                          onselectionchange={onSelectionChange}
+                          parent-id={record.Product2.Id}
+                        ></c-pw-price-configuration-item>
+                      </td>
+                    </template>
+
+                    <template if:false={column.isCheckbox}>
+                      <td key={column.fieldName} role="gridcell">
+                        <c-pw-price-configuration-item config={column} record-id={childRecord.Product2.Id} record={childRecord}
+                          level="2" oncellchange={onCellChange} parent-id={record.Product2.Id}></c-pw-price-configuration-item>
+                      </td>
+                    </template>
+                  </template>
+                </template>
+              </tr>
+            </template>
+
+          </template>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="slds-card__footer">
+      <div class="slds-clearfix">
+        <div class="slds-float_left">
+          <span>{labels.labelTotal}</span>&nbsp;<span><lightning-formatted-number value={grandTotal} format-style="currency" currency-code={currenyCode}></lightning-formatted-number></span>
+        </div>
+        
+        <lightning-button disabled={disableSave} variant="brand" title='{labels.btnSave}' label='{labels.btnSave}' onclick={fireSave} class="slds-float_right"></lightning-button>
+        <div class="slds-float_right">&nbsp;&nbsp;</div>
+        <lightning-button variant="neutral" title='{labels.btnBack}' label='{labels.btnBack}' onclick={fireBack} class="slds-float_right"></lightning-button>
+        <div class="slds-float_right">&nbsp;&nbsp;</div>
+        <c-pw-cancel-button label='{labels.btnCancel}' title='{labels.btnCancel}' class="slds-float_right"></c-pw-cancel-button>
+      </div>
+    </footer>
+  </article>
+</template>

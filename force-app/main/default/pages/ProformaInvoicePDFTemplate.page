@@ -1,0 +1,189 @@
+<apex:page controller="ProformaPDFController" renderAs="pdf" applyBodyTag="false" showHeader="false" standardStylesheets="false">
+<html>
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <!-- SUPPLIER HEADER -->
+    <div style="border-bottom: 1px solid #000; padding-bottom: 10px; margin-bottom: 10px;">
+        <div style="font-size: 8pt; line-height: 1.4; margin-bottom: 8px;">
+            <strong>Furnizor:</strong> {!proforma.Phase__r.Provider_Name__r.Name}<br/>
+            <strong>Nr ord. Reg.Com.:</strong> {!proforma.Phase__r.Provider_Name__r.Registration_Number__c}<br/>
+            <strong>C.U.I.:</strong> {!proforma.Phase__r.Provider_Name__r.Fiscal_Code__c}<br/>
+            <strong>Sediu:</strong> {!proforma.Phase__r.Provider_Name__r.Headquarters__Street__s}, {!proforma.Phase__r.Provider_Name__r.Headquarters__City__s}, {!proforma.Phase__r.Provider_Name__r.Headquarters__StateCode__s}, {!proforma.Phase__r.Provider_Name__r.Headquarters__CountryCode__s}<br/>
+            <strong>Cont lei:</strong> {!proforma.IBAN__c}<br/>
+            <strong>Banca:</strong> {!proforma.Bank__c}<br/>
+            <strong>Capital social:</strong> {!proforma.Phase__r.Provider_Name__r.Capital_Social__c}
+        </div>
+        <div style="text-align: center; font-size: 6.5pt; font-style: italic; margin-top: 5px;">
+            "Operator de date cu caracter personal, inscris in Registrul de Evidenta a Prelucrarii de Date cu Caracter Personal nr. 3406"
+        </div>
+    </div>
+    
+    <!-- BUYER + INVOICE HEADER -->
+    <div style="margin: 10px 0; padding: 8px; border: 1px solid #000; overflow: hidden;">
+        <!-- Buyer Left -->
+        <div style="width: 50%; float: left; font-size: 8pt; line-height: 1.5;">
+            <strong>Cumparator:</strong> {!proforma.Account__r.Name}<br/>
+            
+            <!-- CONDITIE: DOAR PENTRU PERSOANA JURIDICA -->
+            <apex:outputPanel rendered="{!isLegalEntity}">
+                <strong>Nr.Reg.Com/an:</strong> {!proforma.Account__r.TradeRegistrationNumber__c}<br/>
+                <strong>Cod fiscal (C.U.I.):</strong> {!proforma.Account__r.FiscalCode__c}<br/>
+            </apex:outputPanel>
+            
+            <strong>Sediul:</strong> {!proforma.Account__r.BillingStreet}, {!proforma.Account__r.BillingCity}, {!proforma.Account__r.BillingState}, {!proforma.Account__r.BillingCountry}<br/>
+            <strong>Judetul:</strong> {!proforma.Account__r.BillingState}
+        </div>
+        
+        <!-- Invoice Right -->
+        <div style="width: 48%; float: right; text-align: center;">
+        <img src="https://forms.impactsa.ro/logo-impact-nou.png" 
+             width="150" 
+             style="margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;" />
+            <div style="font-size: 14pt; font-weight: bold; margin: 15px 0 10px 0;">
+                FACTURA PROFORMA
+            </div>
+            <div style="font-size: 8pt; line-height: 1.5;">
+                <strong>Serie si numar factura:</strong> {!proforma.Name}<br/>
+                <strong>Data factura:</strong><apex:outputText value="{0,date,yyyy-MM-dd}">
+                    <apex:param value="{!proforma.Proforma_Invoice_Date__c}"/>
+                </apex:outputText><br/>
+                <strong>Data scadentei:</strong><apex:outputText value="{0,date,yyyy-MM-dd}">
+                    <apex:param value="{!proforma.Due_Date__c}"/>
+                </apex:outputText>
+            </div>
+        </div>
+        
+        <div style="clear: both;"></div>
+    </div>
+    
+    <div style="text-align: right; font-size: 8pt; margin: 5px 0;">
+        <strong>-RON-</strong>
+    </div>
+    
+    <!-- ITEMS TABLE -->
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 8pt;">
+        <thead>
+            <tr>
+                <th style="width: 5%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Nr.<br/>Crt
+                </th>
+                <th style="width: 38%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Denumirea produselor sau a serviciilor
+                </th>
+                <th style="width: 6%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    UM
+                </th>
+                <th style="width: 9%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Cantitate
+                </th>
+                <th style="width: 14%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Pret unitar<br/>(fara TVA)
+                </th>
+                <th style="width: 14%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Valoare
+                </th>
+                <th style="width: 14%; border: 1px solid #000; padding: 6px 4px; text-align: center; font-weight: bold; background-color: #fff;">
+                    Valoare TVA
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- LINE ITEMS -->
+            <apex:variable var="rowNum" value="{!1}"/>
+            <apex:repeat value="{!lineItems}" var="item">
+                <tr>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: top;">
+                        {!rowNum}
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; vertical-align: top;">
+                        {!item.Item_Text__c}
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: top;">
+                        ...
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: top;">
+                        1,00
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!item.Amount_RON__c}"/>
+                        </apex:outputText>
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!item.Amount_RON__c}"/>
+                        </apex:outputText>
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!item.VAT_Amount_RON__c}"/>
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+            </apex:repeat>
+            
+            <!-- FOOTER IN TABLE - Row 1 -->
+            <tr style="font-size: 8pt;">
+                <td colspan="4" rowspan="2" style="border: 1px solid #000; padding: 6px 4px; vertical-align: top;">
+                    <strong>Semnatura/ Stampila:</strong>
+                    <div style="margin-top: 40px;"></div>
+                </td>
+                <td colspan="2" style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!proforma.Total_Amount_RON__c}"/>
+                    </apex:outputText>
+                </td>
+                <td style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!proforma.Total_VAT_Amount_RON__c}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            
+            <!-- FOOTER IN TABLE - Row 2 -->
+            <tr style="font-size: 8pt;">
+                <td colspan="2" style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top;">
+                    <strong>Total:</strong>
+                </td>
+                <td style="border: 1px solid #000; padding: 6px 4px; text-align: right; vertical-align: top; font-weight: bold; background-color: #f5f5f5;">
+                    <strong>
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!proforma.Total_Amount_with_VAT_RON__c}"/>
+                        </apex:outputText>
+                    </strong>
+                </td>
+            </tr>
+            
+            <!-- FOOTER IN TABLE - Row 3 -->
+            <tr style="font-size: 8pt;">
+                <td colspan="4" style="border: 1px solid #000; padding: 6px 4px; vertical-align: top;">
+                    <strong>Numele delegatului:</strong><br/>
+                    <strong>Buletin/carte de identitate:</strong><br/>
+                    seria / nr: <span style="border-bottom: 1px dotted #000; display: inline-block; width: 100px;"></span> eliberat de <span style="border-bottom: 1px dotted #000; display: inline-block; width: 100px;"></span><br/>
+                    <strong>Semnaturile:</strong> ............................................................................
+                </td>
+                <td colspan="3" style="border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: middle;">
+                    <strong>Semnatura de primire</strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
+</apex:page>

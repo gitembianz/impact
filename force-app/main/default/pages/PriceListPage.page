@@ -1,0 +1,182 @@
+<apex:page controller="PriceListController" renderAs="pdf" applyBodyTag="false">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style type="text/css">
+            @page { size: A4 landscape; margin: 0.5in; }
+              body { 
+                font-family: "Arial Unicode MS", Arial, sans-serif;
+            }
+            
+            /* Header Table */
+            .header-table { width: 100%; margin-bottom: 20px; }
+            .header-text h1 { font-size: 24px; color: #004b4c; margin: 0; text-align: center; }
+            .logo { height: 50px; }
+            
+            /* Tabel Detalii */
+            .priceTable { width: 100%; border-collapse: collapse; }
+            .priceTable th, .priceTable td { border: 1px solid #ddd; padding: 5px; text-align: left; font-size: 8px; }
+            .priceTable th { background-color: #004b4c; color: white; font-weight: bold; }
+            .priceTable tr:nth-child(even){ background-color: #f2f2f2; }
+            
+            /* Tabel Sumar */
+            .summaryTable { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            .summaryTable th, .summaryTable td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 8px; }
+            .summaryTable th { background-color: #004b4c; color: white; font-weight: bold; }
+            
+            /* Text static */
+            .static-text { font-size: 8px; line-height: 1.4; color: #333; margin-top: 15px; }
+            
+            /* Separatori */
+            .page-break { page-break-after: always; }
+            .section-title { font-size: 11px; font-weight: bold; color: #004b4c; margin-top: 15px; margin-bottom: 8px; }
+        </style>
+    </head>
+
+    <body>
+        <table class="header-table">
+            <tr>
+                <td style="width: 20%"></td>
+                <td style="width: 60%; text-align: center;">
+                    <div class="header-text"><h1>Detaliere ofertă - {!quoteDetails.Name}</h1></div>
+                </td>
+                <td style="width: 20%; text-align: right;">
+                    <img src="{!$Resource.LogoAriaVerdi}" class="logo" />
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-title">DETALII OFERTĂ</div>
+        <table class="priceTable">
+            <thead>
+                <tr>
+                    <th>ID Unitate</th>
+                    <th>Tip</th>
+                    <th>SCD Apartament (mp)</th>
+                    <th>SU (mp)</th>
+                    <th>SCD Balcon (mp)</th>
+                    <th>SCD Total (mp)</th>
+                    <th>Etaj</th>
+                    <th>Orientare</th>
+                    
+                    <th>
+                        <apex:outputText value="{!IF(hasDiscount, 
+                        'Pre&#355; lansare cu reducere fără TVA', 
+                        'Pre&#355; lansare fără TVA')}" 
+                        escape="false" />
+                    </th>
+                    
+                    <th>
+                        <apex:outputText value="{!IF(hasDiscount, 
+                        'Pre&#355; lansare/mp cu reducere fără TVA', 
+                        'Pre&#355; lansare/mp fără TVA')}" 
+                        escape="false" />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!priceRows}" var="row">
+                    <tr>
+                        <td>{!row.entry.Product2.Name}</td>
+                        <td>{!row.tip}</td>
+                        <td>{!row.scdMp}</td>
+                        <td>{!row.suAp}</td>
+                        <td>{!row.scdBalcon}</td>
+                        <td>{!row.scdTotal}</td>
+                        <td>{!row.entry.Product2.Floor__c}</td>
+                        <td>{!row.entry.Product2.Orientation__c}</td>
+                        
+                        <td>{!row.pretUnit}</td> 
+                        
+                        <td></td> 
+                    </tr>
+                </apex:repeat>
+
+                <tr style="font-weight: bold; background-color: #e8e8e8; border-top: 2px solid #004b4c;">
+                    <td>TOTAL APARTAMENTE</td>
+                    <td>{!aptTotalCount} unitati</td>
+                    <td>{!aptTotalScd}</td>
+                    <td>{!aptTotalSu}</td>
+                    <td>{!aptTotalBalcon}</td>
+                    <td>{!aptTotalScdTotal}</td>
+                    <td></td>
+                    <td></td>
+                    <td>{!aptTotalPret}</td>
+                    
+                    <td>{!aptTotalPretPeMp}</td>
+                </tr>
+
+                <tr style="font-weight: bold; background-color: #e8e8e8; display: {!IF(parkTotalCount == '0', 'none', 'table-row')};">
+                    <td>TOTAL PARCĂRI</td>
+                    <td>{!parkTotalCount} locuri</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td></td>
+                    <td></td>
+                    <td>{!parkTotalPret}</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="page-break"></div>
+
+        <table class="header-table">
+            <tr>
+                <td style="width: 20%"></td>
+                <td style="width: 60%; text-align: center;">
+                    <div class="header-text"><h1>Sumar ofertă {!quoteDetails.Name}</h1></div>
+                </td>
+                <td style="width: 20%; text-align: right;">
+                    <img src="{!$Resource.LogoAriaVerdi}" class="logo" />
+                </td>
+            </tr>
+        </table>
+
+        <div class="section-title">📊 SUMAR OFERTĂ</div>
+        <table class="summaryTable">
+            <thead>
+                <tr>
+                    <th>Pre&#355; estimat finalizare fără TVA</th>
+                    <th>
+                        <apex:outputText value="{!IF(hasDiscount, 
+                        'Pre&#355; lansare cu reducere fără TVA', 
+                        'Pre&#355; lansare fără TVA')}" 
+                        escape="false" />
+                    </th>
+                    <th>Avantaj client</th>
+                    <th>Suprafa&#355;ă achizi&#355;ionată (mp)</th>
+                    <th>Nr. apartamente</th>
+                    <th>Pre&#355; estimat finalizare / mp fără TVA</th>
+                    <th>
+                        <apex:outputText value="{!IF(hasDiscount, 
+                        'Pre&#355; lansare/mp cu reducere fără TVA', 
+                        'Pre&#355; lansare/mp fără TVA')}" 
+                        escape="false" />
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{!pretDeLista}</td>
+                    <td>{!pretLansare}</td>
+                    <td>{!avantajClient}</td>
+                    <td>{!totalSuprafataConstruita}</td>
+                    <td>{!totalApartamente}</td>
+                    <td>{!mediaPretPeMapLista}</td>
+                    <td>{!mediaPretPeMapLansare}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="static-text">
+            <b>Termene de plată avans:</b><br/>
+            5% - Se achită în termen de 7 (&#537;apte) zile de la semnarea Contractului de Rezervare.<br/>
+            25% - Se achită în termen de 7 (&#537;apte) zile de la semnarea Promisiunii Bilaterale de Vânzare (Avans).<br/>
+            20% - Se achită la momentul finalizării instala&#355;iilor. (Avans suplimentar)<br/>
+            50% - Se achită la data semnarii Contractului de Vânzare în forma autentică (Rest de Pre&#355;).<br/>
+            Fiecărui apartament îi revine un loc de parcare subteran, respectiv un total de {!totalApartamente} locuri de parcare, incluse în pre&#355;ul de lansare.
+        </div>
+    </body>
+</apex:page>

@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Generator Anexă PDF" icon-name="standard:document">
+        <div class="slds-p-around_medium">
+            <template if:false={isMerging}>
+                <p class="slds-m-bottom_small">Apăsați butonul pentru a genera anexa PDF îmbinată.</p>
+                <lightning-button 
+                    label="Generează și Descarcă Anexa" 
+                    variant="brand" 
+                    onclick={handleMergeClick}>
+                </lightning-button>
+            </template>
+            <template if:true={isMerging}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                <p class="slds-m-top_small">{statusMessage}</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>
